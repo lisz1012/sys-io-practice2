@@ -19,7 +19,6 @@
   </properties>
 
   <dependencies>
-
     <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
     <dependency>
       <groupId>io.netty</groupId>
