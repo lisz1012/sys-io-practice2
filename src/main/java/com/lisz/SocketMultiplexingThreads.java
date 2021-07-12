@@ -153,7 +153,7 @@ class NioThread extends Thread {
 						client.write(buffer);
 					}
 					buffer.clear();
-				} else if (read == 0) {
+				} else if (read == 0) { // 正常读完了
 					break;
 				} else { // 对方关闭
 					client.close();
