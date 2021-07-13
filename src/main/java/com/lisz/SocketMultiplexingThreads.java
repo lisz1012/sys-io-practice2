@@ -147,7 +147,7 @@ class NioThread extends Thread {
 		try {
 			while (true) {
 				read = client.read(buffer);
-				if (read > 0) {
+				if (read > 0) { // 正在读，读到了文件中间
 					buffer.flip();
 					while (buffer.hasRemaining()) {
 						client.write(buffer);
