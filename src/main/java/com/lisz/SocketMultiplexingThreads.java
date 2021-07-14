@@ -138,7 +138,7 @@ class NioThread extends Thread {
 	}
 
 
-	// 读数据
+	// 读数据，这里可能涉及到分手
 	private void handleRead(SelectionKey key) {
 		SocketChannel client = (SocketChannel) key.channel();
 		ByteBuffer buffer = (ByteBuffer) key.attachment();
