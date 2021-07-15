@@ -66,7 +66,7 @@ class NioThread extends Thread {
 
 	private static int selectors = 0;
 
-	private static volatile LinkedBlockingQueue<SocketChannel>[] queue;
+	private static volatile LinkedBlockingQueue<SocketChannel>[] queues;
 
 	private int id = 0;
 
@@ -76,9 +76,9 @@ class NioThread extends Thread {
 	public NioThread(Selector selector, int n) {
 		this.selector = selector;
 		selectors = n;
-		queue = new LinkedBlockingQueue[selectors];
+		queues = new LinkedBlockingQueue[selectors];
 		for (int i = 0; i < n; i++) {
-			queue[i] = new LinkedBlockingQueue<SocketChannel>();
+			queues[i] = new LinkedBlockingQueue<SocketChannel>();
 		}
 	}
 
@@ -107,8 +107,8 @@ class NioThread extends Thread {
 						}
 					}
 				}
-				if (!queue[id].isEmpty()) { // 出队 + 注册读事件
-					SocketChannel client = queue[id].take();
+				if (!queues[id].isEmpty()) { // 出队 + 注册读事件
+					SocketChannel client = queues[id].take();
 					ByteBuffer buffer = ByteBuffer.allocateDirect(8192);
 					client.register(selector, SelectionKey.OP_READ, buffer);
 					System.out.println("-------------------------------------------");
@@ -131,7 +131,7 @@ class NioThread extends Thread {
 			SocketChannel client = ssc.accept();
 			client.configureBlocking(false);
 			int num = idx.getAndIncrement() % selectors;
-			queue[num].offer(client);
+			queues[num].offer(client);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
