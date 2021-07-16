@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+// 参见ProcessOn的类图
 public class SocketMultiplexingThreads {
 
 	private ServerSocketChannel server;
