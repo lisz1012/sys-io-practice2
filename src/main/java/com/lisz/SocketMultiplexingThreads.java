@@ -28,6 +28,7 @@ public class SocketMultiplexingThreads {
 			selector1 = Selector.open();
 			selector2 = Selector.open();
 			selector3 = Selector.open();
+			// selector1的用途生来就不一样
 			server.register(selector1, SelectionKey.OP_ACCEPT);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -72,7 +73,7 @@ class NioThread extends Thread {
 
 	private int id = 0;
 
-	private AtomicInteger idx = new AtomicInteger(0);
+	private static AtomicInteger idx = new AtomicInteger(0);
 
 
 	public NioThread(Selector selector, int n) {
