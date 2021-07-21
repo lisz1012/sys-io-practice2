@@ -50,16 +50,30 @@ public class MyNetty {
 	 * 2. 别人什么时候给我发？event selector
 	 */
 	@Test
-	public void clientMode() throws Exception {
+	public void loopExecutor() throws Exception {
 		// 先把group理解成一个线程池
-		NioEventLoopGroup selector = new NioEventLoopGroup(1);
+		NioEventLoopGroup selector = new NioEventLoopGroup(2);
 		selector.execute(() -> {
-			System.out.println("Hello world");
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			while (true) {
+				System.out.println("Hello world 001");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+
+		});
+		selector.execute(() -> {
+			while (true) {
+				System.out.println("Hello world 002");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
 		});
 		System.in.read();
 	}
