@@ -1,11 +1,11 @@
 package com.lisz.netty;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.UnpooledByteBufAllocator;
+import io.netty.buffer.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.Test;
+
+import java.net.InetSocketAddress;
 
 public class MyNetty {
 
@@ -78,4 +78,16 @@ public class MyNetty {
 		System.in.read();
 	}
 
+
+	@Test
+	public void clientMode() {
+		// NioEventLoopGroup thread = new NioEventLoopGroup();
+		// 客户端模式
+		NioSocketChannel client = new NioSocketChannel();
+		client.connect(new InetSocketAddress("192.168.1.253", 9090));
+		ByteBuf buf = Unpooled.copiedBuffer("hello server".getBytes());
+		client.writeAndFlush(buf);
+
+		System.out.println("client over...");
+	}
 }
