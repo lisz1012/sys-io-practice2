@@ -26,7 +26,7 @@ public class MyNetty {
 		print(buf);
 		buf.writeBytes(new byte[]{1,2,3,4});
 		print(buf);
-//		buf.writeBytes(new byte[]{1,2,3,4});
+//		buf.writeBytes(new byte[]{1,2,3,4}); // 报错，超过最大capacity
 //		print(buf);
 	}
 
