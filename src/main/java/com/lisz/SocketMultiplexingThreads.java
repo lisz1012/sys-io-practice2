@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 // 参见ProcessOn的类图，IO这一块，是很多分布式框架的基础
 // 他们大都会用到这方面的知识，尤其是NIO
+// 这一部分理解的内容较多，建议多看多思考多记笔记！
 public class SocketMultiplexingThreads {
 
 	private ServerSocketChannel server;
