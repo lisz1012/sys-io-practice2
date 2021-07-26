@@ -1,6 +1,7 @@
 package com.lisz.netty;
 
 import io.netty.buffer.*;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.Test;
@@ -80,13 +81,31 @@ public class MyNetty {
 
 
 	@Test
-	public void clientMode() {
-		// NioEventLoopGroup thread = new NioEventLoopGroup();
+	public void clientMode() throws Exception {
+		// Netty多路复用器
+		NioEventLoopGroup thread = new NioEventLoopGroup();
+
 		// 客户端模式
 		NioSocketChannel client = new NioSocketChannel();
-		client.connect(new InetSocketAddress("192.168.1.253", 9090));
+
+		// 读写都要用多路复用器：EventLoop
+		// 否则报错：channel not registered to an event loop
+		thread.register(client); // epoll_ctl(5, ADD, 3)
+
+		// reactor 异步的特征
+		ChannelFuture connect = client.connect(new InetSocketAddress("192.168.1.99", 9090));
+
+		// 连上了才往下走
+		ChannelFuture sync = connect.sync();
+
 		ByteBuf buf = Unpooled.copiedBuffer("hello server".getBytes());
-		client.writeAndFlush(buf);
+		ChannelFuture send = client.writeAndFlush(buf);
+
+		// 发送成功才能往下走
+		send.sync();
+
+		// 会阻塞在关闭等待上，以上步骤可能来回多次，是个长连接，服务端退出的时候会往下走
+		sync.channel().closeFuture().sync();
 
 		System.out.println("client over...");
 	}
