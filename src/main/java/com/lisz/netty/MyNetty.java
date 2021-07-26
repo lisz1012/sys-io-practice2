@@ -1,7 +1,9 @@
 package com.lisz.netty;
 
 import io.netty.buffer.*;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.Test;
@@ -88,9 +90,13 @@ public class MyNetty {
 		// 客户端模式
 		NioSocketChannel client = new NioSocketChannel();
 
-		// 读写都要用多路复用器：EventLoop
+		// 读写都要用多路复用器：EventLoop. 客户端注册到多路复用器上
 		// 否则报错：channel not registered to an event loop
 		thread.register(client); // epoll_ctl(5, ADD, 3)
+
+		// 响应式的，有了事件才会调用Handler
+		ChannelPipeline pipeline = client.pipeline();
+		pipeline.addLast(new MyInHandler());
 
 		// reactor 异步的特征
 		ChannelFuture connect = client.connect(new InetSocketAddress("192.168.1.99", 9090));
