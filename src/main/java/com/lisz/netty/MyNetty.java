@@ -1,16 +1,20 @@
 package com.lisz.netty;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.*;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
 
 public class MyNetty {
+
+
 
 	@Test
 	public void myBytebuf() {
@@ -33,6 +37,8 @@ public class MyNetty {
 //		print(buf);
 	}
 
+
+
 	private static void print(ByteBuf buf) {
 		System.out.println("buf.isReadable() = " + buf.isReadable());           // 可不可读
 		System.out.println("buf.readerIndex() = " + buf.readerIndex());         // 从哪里读
@@ -45,6 +51,8 @@ public class MyNetty {
 		System.out.println("buf.isDirect() = " + buf.isDirect());               // true为堆外内存
 		System.out.println("--------------------------------------------");
 	}
+
+
 
 	/**
 	 * 客户端
@@ -82,6 +90,7 @@ public class MyNetty {
 	}
 
 
+
 	@Test
 	public void clientMode() throws Exception {
 		// Netty多路复用器
@@ -114,5 +123,18 @@ public class MyNetty {
 		sync.channel().closeFuture().sync();
 
 		System.out.println("client over...");
+	}
+
+
+
+	@Test
+	public void serverMode() throws Exception {
+		NioEventLoopGroup thread = new NioEventLoopGroup(1);
+		NioServerSocketChannel server = new NioServerSocketChannel();
+		thread.register(server);
+		// 指不定什么时候家里来人, 响应式，预埋
+		server.pipeline().addLast(new MyAcceptHandler(thread, new MyInHandler())); // accept接收并且注册到selector
+		ChannelFuture serverFuture = server.bind(new InetSocketAddress("localhost", 9090));
+		serverFuture.sync().channel().closeFuture().sync();
 	}
 }
