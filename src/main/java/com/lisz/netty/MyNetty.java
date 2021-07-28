@@ -132,7 +132,7 @@ public class MyNetty {
 		NioEventLoopGroup thread = new NioEventLoopGroup(1);
 		NioServerSocketChannel server = new NioServerSocketChannel();
 		thread.register(server);
-		// 指不定什么时候家里来人, 响应式，预埋
+		// 指不定什么时候家里来人, 响应式，预埋，之后的某个时间执行
 		server.pipeline().addLast(new MyAcceptHandler(thread, new MyInHandler())); // accept接收并且注册到selector
 		ChannelFuture serverFuture = server.bind(new InetSocketAddress("localhost", 9090));
 		serverFuture.sync().channel().closeFuture().sync();
